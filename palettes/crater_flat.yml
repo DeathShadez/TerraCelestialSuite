@@ -1,4 +1,6 @@
-id: "CRATER_FLAT"
+id: CRATER_FLAT
+type: PALETTE
+
 layers:
   - materials:
       - "minecraft:stone": 1

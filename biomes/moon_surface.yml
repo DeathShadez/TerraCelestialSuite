@@ -1,0 +1,96 @@
+id: MOON_SURFACE
+type: BIOME
+extends: BASE
+vanilla: end_barrens
+
+vars: &variables
+  base: 64          # Base terrain height
+  craterHeight: 100 # How high craters will go above the base height
+
+terrain:
+  sampler:
+    type: EXPRESSION
+    expression: -y + base
+    variables: *variables
+
+  sampler-2d:
+    type: EXPRESSION
+    expression: (craters(x, z)+1)/2 * craterHeight
+    variables: *variables
+    samplers:
+      craters:
+        dimensions: 2
+        type: DOMAIN_WARP
+        amplitude: 2.5
+        warp:
+          type: OPEN_SIMPLEX_2
+          frequency: 0.03
+        sampler:
+          type: FBM
+          octaves: 4
+          lacunarity: 1.5
+          gain: 0.8
+          sampler:
+            type: EXPRESSION
+            expression: |
+              envelope(
+                (celldist(x, z) + radiusOffset) * edgeSharpness,
+                insideDepth,  insidePinch,
+                outsideDepth, outsidePinch
+              )
+            variables:
+
+              radiusOffset: 0.95 # Between 0.8 - 0.99 for best results
+              edgeSharpness: 20 # Greater values give sharper transitions
+
+              # Depth = how deep the area is (should be between 0 and 2)
+              # The depth inside should generally be greater than the outside
+
+              # Pinch = how quickly the edge converges towards the depth
+              # Higher values give steeper transitions
+
+              # Area outside crater
+              outsideDepth: 0.75
+              outsidePinch: 0.5
+
+              # Area inside crater
+              insideDepth:  2
+              insidePinch:  2
+
+            samplers:
+              celldist:
+                dimensions: 2
+                type: DOMAIN_WARP
+                amplitude: 10
+                warp:
+                  type: FBM
+                  octaves: 3
+                  sampler:
+                    type: OPEN_SIMPLEX_2
+                    frequency: 0.015
+                sampler:
+                  type: CELLULAR
+                  frequency: 0.003
+            functions:
+              envelope:
+                arguments:
+                  - x
+                  - depth1
+                  - pinch1
+                  - depth2
+                  - pinch2
+                expression: |
+                  if(x < 0,
+                    depth1 * (2^( x * pinch1) - 1) + 1,
+                    depth2 * (2^(-x * pinch2) - 1) + 1
+                  )
+
+palette:
+  - CRATER_FLAT: 255
+  - "BLOCK:minecraft:bedrock": 0
+
+slant:
+  threshold: 4
+  palette:
+    - CRATER_SLANT: 255
+    - "BLOCK:minecraft:bedrock": 0

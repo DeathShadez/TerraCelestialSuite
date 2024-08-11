@@ -1,4 +1,6 @@
-id: "CRATER_SLANT"
+id: CRATER_SLANT
+type: PALETTE
+
 layers:
   - materials:
       - "minecraft:basalt": 5
