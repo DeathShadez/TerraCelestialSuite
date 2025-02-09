@@ -32,6 +32,10 @@ biomes:
   type: SINGLE
   biome: MOON_SURFACE
 
+stages:
+  - id: ores
+    type: FEATURE
+
 functions:
   "<<":
     - math/functions/terrace.yml:functions

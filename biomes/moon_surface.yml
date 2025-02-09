@@ -94,3 +94,7 @@ slant:
   palette:
     - CRATER_SLANT: 255
     - "BLOCK:minecraft:bedrock": 0
+
+features:
+  ores:
+    - COAL_ORE
